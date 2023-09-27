@@ -1,18 +1,13 @@
 
 package com.meva.finance.api;
 
-import com.meva.finance.dtos.CategoryDto;
-import com.meva.finance.entities.Category;
-import com.meva.finance.repositories.CategoryRepository;
+import com.meva.finance.service.CategoryService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.List;
 
 
 @Slf4j
@@ -20,17 +15,23 @@ import java.util.List;
 @RequestMapping("/category")
 public class Controller {
 
-    private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
-    public Controller(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
+    @Autowired
+    public Controller(CategoryService categoryService) {
+        this.categoryService = categoryService;
     }
 
-@GetMapping("/list")
-public List<CategoryDto> AllCategory() {
-        List<Category> categories = categoryRepository.findAll();
 
-        return  ;
+    @GetMapping("/users/getIdCategoryByDesc/{description}")
+    public ResponseEntity<Long> getIdCategoryByDesc(@PathVariable String description) {
+        Long id = categoryService.getIdCategoryByDesc(description);
+
+        if (id == -1L) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(id);
+        } else {
+            return ResponseEntity.ok().body(id);
+        }
+
     }
-
 }
